@@ -18,13 +18,13 @@ def apply_custom_style():
         background-color: #F8F9FA;
     }
 
-    /* 3. st.info 박스 스타일 변경 (보라색 테마로 커스텀) */
-    /* 기본 파란색 알림창을 우리가 원하는 보라색 개념 박스로 바꿉니다 */
+    /* 3. st.info 박스 스타일 변경 (보라색 테마) */
     div[data-baseweb="notification"] {
         background-color: #F3F0FF !important; /* 연한 보라 배경 */
         border-left: 5px solid #6C5CE7 !important; /* 진한 보라 선 */
         border-radius: 10px;
         padding: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     
     /* 4. 제목 스타일 */
@@ -51,9 +51,10 @@ def apply_custom_style():
     /* 6. 라디오 버튼 스타일 */
     .stRadio label {
         background: white;
-        padding: 10px;
-        border-radius: 10px;
+        padding: 12px;
+        border-radius: 12px;
         border: 2px solid #EEE;
+        margin-bottom: 5px;
     }
     .stRadio label:hover {
         border-color: #6C5CE7;
@@ -63,7 +64,7 @@ def apply_custom_style():
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. 📚 데이터 (수학 공식이 깨지지 않도록 r"..." 사용) ---
+# --- 2. 📚 데이터: 깨지지 않는 '텍스트' 방식 설명 ---
 UNITS = {
     1: "1. 분수의 나눗셈",
     2: "2. 각기둥과 각뿔",
@@ -71,10 +72,9 @@ UNITS = {
     4: "4. 비와 비율"
 }
 
-# 중요: 여기서 HTML 태그를 쓰지 않고 마크다운만 씁니다.
-# 디자인은 위에서 설정한 CSS가 st.info 박스에 자동으로 적용됩니다.
+# 중요: 수식 코드($$)를 다 빼고, 일반 특수문자(÷, ×)로 교체했습니다.
 CONCEPTS = {
-    1: r"""
+    1: """
 ### 🍰 분수의 나눗셈 핵심 정리
 
 **1. (자연수) ÷ (자연수)**
@@ -86,24 +86,22 @@ CONCEPTS = {
 >
 > 뒤에 있는 수(나누는 수)가 **분모(아래)**로 슝! 내려갑니다.
 >
-> $$ 1 \div 3 = \frac{1}{3} $$
+> **1 ÷ 3 = 1/3**
 
 **2. (분수) ÷ (자연수)**
 
 나누기는 **'곱하기 분의 1'**로 변신할 수 있어요.
 "4로 나눈다"는 말은 "4등분 한 것 중의 하나(1/4)를 가진다"는 뜻이니까요.
 
-> **📝 예시 문제**
+> **📝 예시 문제: 4/5 ÷ 2**
 >
-> $$ \frac{4}{5} \div 2 $$
+> ① 나누기를 곱하기로 변신! 👉 **4/5 × 1/2**
 >
-> ① 나누기를 곱하기로 변신! 👉 $$ \frac{4}{5} \times \frac{1}{2} $$
+> ② 분모는 분모끼리! 👉 **4/10**
 >
-> ② 분모는 분모끼리! 👉 $$ \frac{4}{10} $$
->
-> ③ 약분하면 끝! 👉 $$ \frac{2}{5} $$
+> ③ 약분하면 끝! 👉 **2/5**
 """,
-    2: r"""
+    2: """
 ### 📦 각기둥과 각뿔 구분하기
 
 **🏢 각기둥 (아파트 모양)**
@@ -116,29 +114,29 @@ CONCEPTS = {
 * 바닥은 평평하지만 위는 **뾰족한 점**으로 모여요.
 * 옆에서 보면 **삼각형** 모양이에요.
 
-> **⚡ 구성 요소 공식 (N = 밑면의 변의 수)**
+> **⚡ 구성 요소 공식 (N = 한 밑면의 변의 수)**
 >
-> * **각기둥 모서리**: $ N \times 3 $
-> * **각기둥 꼭짓점**: $ N \times 2 $
-> * **각뿔 모서리**: $ N \times 2 $
-> * **각뿔 꼭짓점**: $ N + 1 $
+> * **각기둥 모서리**: N × 3 (변의 수 × 3)
+> * **각기둥 꼭짓점**: N × 2 (변의 수 × 2)
+> * **각뿔 모서리**: N × 2 (변의 수 × 2)
+> * **각뿔 꼭짓점**: N + 1 (변의 수 + 1)
 """,
-    3: r"""
+    3: """
 ### 💧 소수의 나눗셈 비법
 
 **"점은 나중에 찍자!"**
 
 소수점이 있으면 어렵죠? 잠시 점을 없애고 **자연수처럼** 계산하세요.
 
-> **🔎 예시: $$ 3.66 \div 3 $$**
+> **🔎 예시: 3.66 ÷ 3**
 >
-> 1.  점 숨기기: $$ 366 \div 3 = 122 $$
+> 1.  점 숨기기: **366 ÷ 3 = 122**
 > 2.  점 다시 찍기: 원래 점이 두 칸 앞에 있었죠?
 >     정답도 똑같이 두 칸 앞에 점을 콕!
 >
->     👉 **1.22**
+>     👉 정답: **1.22**
 """,
-    4: r"""
+    4: """
 ### 🍎 비와 비율
 
 **1. 비 (Ratio)**
@@ -150,7 +148,9 @@ CONCEPTS = {
 >
 > 비를 분수나 소수로 나타낸 값이에요.
 >
-> $$ \text{비율} = \frac{\text{비교하는 양(앞)}}{\text{기준량(뒤)}} $$
+> **비율 = 비교하는 양(앞) ÷ 기준량(뒤)**
+>
+> (예: 3 ÷ 2 = 3/2 = 1.5)
 """
 }
 
@@ -179,12 +179,12 @@ def generate_problem(unit_num, difficulty):
         if difficulty == '하':
             a, b = random.randint(1, 8), random.randint(2, 9)
             if a >= b: b = a + 1
-            problem['q'] = f"피자 {a}판을 {b}명이 나누어 먹습니다. 한 사람의 양은?"
+            problem['q'] = f"피자 {a}판을 {b}명이 나누어 먹습니다. 한 사람의 양은? (분수로)"
             problem['a'] = f"{a}/{b}"
             problem['exp'] = f"전체({a}) ÷ 사람수({b}) = {a}/{b}"
         else:
             ja, mo, nat = random.randint(1, 9), random.randint(2, 9), random.randint(2, 5)
-            problem['q'] = f"계산하시오: $$\\frac{{{ja}}}{{{mo}}} \\div {nat}$$"
+            problem['q'] = f"계산하시오: {ja}/{mo} ÷ {nat}"
             problem['a'] = f"{ja}/{mo*nat}"
             problem['exp'] = f"나누기를 곱하기 1/{nat}로 바꿔서 계산해요."
             
@@ -216,7 +216,7 @@ def generate_problem(unit_num, difficulty):
         d = random.randint(2, 5)
         q = random.randint(12, 88)
         dividend = q * d 
-        problem['q'] = f"계산하시오: $${dividend/100} \\div {d}$$"
+        problem['q'] = f"계산하시오: {dividend/100} ÷ {d}"
         problem['a'] = str(q/100)
         problem['exp'] = f"{dividend}÷{d}={q} 이므로 점을 찍으면 {q/100}"
         if q_type == 'obj':
@@ -229,7 +229,7 @@ def generate_problem(unit_num, difficulty):
         if random.random() > 0.5:
             problem['q'] = f"비 {a}:{b}의 비율(분수)은?"
             problem['a'] = f"{a}/{b}"
-            problem['exp'] = f"앞({a}) 나누기 뒤({b}) = {a}/{b}"
+            problem['exp'] = f"앞({a}) ÷ 뒤({b}) = {a}/{b}"
             if q_type == 'obj': problem['options'] = [f"{a}/{b}", f"{b}/{a}", f"1/{b}", f"{a+b}"]
         else:
             problem['q'] = f"비 {a}:{b}에서 **기준량**은?"
@@ -245,7 +245,6 @@ def main():
     st.set_page_config(page_title="초등 수학 짱", page_icon="💯", layout="wide")
     apply_custom_style()
 
-    # NameError 방지: 변수 초기화를 가장 먼저 수행
     unit_labels = list(UNITS.values())
 
     if 'step' not in st.session_state: st.session_state.step = 'intro'
@@ -263,13 +262,10 @@ def main():
         
         # 단원 선택
         cur_label = UNITS[st.session_state.current_unit]
-        # index 에러 방지를 위한 안전장치
-        if cur_label not in unit_labels:
-            cur_label = unit_labels[0]
+        if cur_label not in unit_labels: cur_label = unit_labels[0]
             
         sel = st.radio("학습 단원", unit_labels, index=unit_labels.index(cur_label), label_visibility="collapsed")
         
-        # 변경 감지
         new_u = [k for k, v in UNITS.items() if v == sel][0]
         if new_u != st.session_state.current_unit:
             st.session_state.current_unit = new_u
@@ -297,7 +293,7 @@ def main():
     if st.session_state.step == 'intro':
         st.markdown(f"<h1 style='color:#6C5CE7; font-family:Jua;'>오늘의 학습: {unit_name.split('. ')[1]}</h1>", unsafe_allow_html=True)
         
-        # HTML 태그 대신 st.info 사용 (CSS로 색상 변경됨) -> LaTeX 완벽 지원
+        # HTML 태그 없이 st.info만 사용하여 내용 표시 (깨짐 방지)
         st.info(CONCEPTS[st.session_state.current_unit])
         
         st.markdown("<br>", unsafe_allow_html=True)
@@ -323,7 +319,6 @@ def main():
         
         prob = st.session_state.current_prob
         
-        # 문제 표시 (컨테이너 사용)
         with st.container(border=True):
             st.markdown(f"<h4 style='color:#888;'>Q{st.session_state.q_idx + 1}.</h4>", unsafe_allow_html=True)
             st.markdown(f"### {prob['q']}")
@@ -348,7 +343,6 @@ def main():
                         st.session_state.score += 1
                     else:
                         st.error("틀렸습니다 😢")
-                        # 오답 해설도 st.info(또는 warning) 사용해서 수식 깨짐 방지
                         st.warning(f"**정답: {prob['a']}**\n\n해설: {prob['exp']}")
                         
                         if prob not in st.session_state.wrong_notes:
@@ -388,7 +382,6 @@ def main():
                 st.markdown(f"**문제:** {n['q']}")
                 st.markdown(f"**내가 쓴 답:** :red[{n.get('user_wrong','?')}]")
                 st.markdown(f"**정답:** :green[{n['a']}]")
-                # 해설 박스
                 st.info(f"**해설:** {n['exp']}")
         
         if st.button("🔙 돌아가기", use_container_width=True):
