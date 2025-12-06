@@ -1,55 +1,38 @@
 import streamlit as st
 import random
 
-# --- 1. 🎨 디자인 & CSS 설정 (수식 깨짐 해결 + 폰트 강제 적용) ---
+# --- 1. 🎨 디자인 & CSS 설정 ---
 def apply_custom_style():
     st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-    /* 1. 폰트 강제 적용 (모든 요소) */
-    html, body, [class*="css"], div, p, span, h1, h2, h3, h4, li, button, input {
-        font-family: 'Jua', 'Noto Sans KR', 'Malgun Gothic', sans-serif !important;
+    /* 1. 기본 폰트 설정 */
+    html, body, [class*="css"], div, p, span, h1, h2, h3, h4, button, input {
+        font-family: 'Jua', 'Noto Sans KR', sans-serif !important;
         color: #333333;
     }
 
-    /* 배경색 */
+    /* 2. 배경색 */
     .stApp {
         background-color: #F8F9FA;
     }
 
-    /* 2. 메인 카드 디자인 (st.container의 테두리 스타일을 덮어씀) */
-    /* HTML div 대신 st.container(border=True)를 꾸며서 카드처럼 만듦 */
-    [data-testid="stVerticalBlockBorderWrapper"] {
-        background-color: white;
-        border-radius: 20px;
-        padding: 20px;
-        border: 2px solid #E9ECEF;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
-    }
-
-    /* 3. 하이라이트 박스 디자인 (마크다운 인용구 '>' 스타일을 덮어씀) */
-    /* HTML div 대신 > (인용구)를 꾸며서 설명 박스처럼 만듦 */
-    blockquote {
-        background-color: #F3F0FF; /* 연한 보라색 배경 */
-        border-left: 6px solid #6C5CE7; /* 진한 보라색 선 */
-        padding: 15px 20px;
+    /* 3. st.info 박스 스타일 변경 (보라색 테마로 커스텀) */
+    /* 기본 파란색 알림창을 우리가 원하는 보라색 개념 박스로 바꿉니다 */
+    div[data-baseweb="notification"] {
+        background-color: #F3F0FF !important; /* 연한 보라 배경 */
+        border-left: 5px solid #6C5CE7 !important; /* 진한 보라 선 */
         border-radius: 10px;
-        color: #333;
-        font-size: 1.05rem;
-        margin: 10px 0;
+        padding: 20px;
+    }
+    
+    /* 4. 제목 스타일 */
+    h1, h2, h3 {
+        color: #6C5CE7 !important;
     }
 
-    /* 제목 스타일 */
-    h3 {
-        color: #6C5CE7 !important; /* 보라색 제목 */
-        font-size: 1.8rem !important;
-        margin-bottom: 20px;
-        font-family: 'Jua', sans-serif !important;
-    }
-
-    /* 버튼 스타일 */
+    /* 5. 버튼 스타일 */
     .stButton>button {
         background: linear-gradient(135deg, #6C5CE7, #8076EE);
         color: white !important;
@@ -58,7 +41,6 @@ def apply_custom_style():
         padding: 15px 0;
         font-size: 1.2rem;
         font-weight: bold;
-        box-shadow: 0 4px 10px rgba(108, 92, 231, 0.2);
         width: 100%;
         margin-top: 10px;
     }
@@ -66,20 +48,12 @@ def apply_custom_style():
         transform: scale(1.02);
     }
     
-    /* 사이드바 스타일 */
-    [data-testid="stSidebar"] {
-        background-color: #FFFFFF;
-        border-right: 1px solid #E5E7EB;
-    }
-    
-    /* 라디오 버튼 스타일 */
+    /* 6. 라디오 버튼 스타일 */
     .stRadio label {
         background: white;
-        padding: 12px;
-        border-radius: 12px;
-        border: 2px solid #F1F3F5;
-        margin-bottom: 5px;
-        font-size: 1rem !important;
+        padding: 10px;
+        border-radius: 10px;
+        border: 2px solid #EEE;
     }
     .stRadio label:hover {
         border-color: #6C5CE7;
@@ -89,10 +63,16 @@ def apply_custom_style():
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. 📚 데이터: 마크다운으로 변환된 개념 설명 (수식 작동함!) ---
-# 중요: HTML 태그(<div>)를 모두 제거하고, 순수 마크다운과 수식($$)만 남겼습니다.
-# r""" ... """ (Raw String)을 사용하여 파이썬이 수식 기호를 오해하지 않도록 했습니다.
+# --- 2. 📚 데이터 (수학 공식이 깨지지 않도록 r"..." 사용) ---
+UNITS = {
+    1: "1. 분수의 나눗셈",
+    2: "2. 각기둥과 각뿔",
+    3: "3. 소수의 나눗셈",
+    4: "4. 비와 비율"
+}
 
+# 중요: 여기서 HTML 태그를 쓰지 않고 마크다운만 씁니다.
+# 디자인은 위에서 설정한 CSS가 st.info 박스에 자동으로 적용됩니다.
 CONCEPTS = {
     1: r"""
 ### 🍰 분수의 나눗셈 핵심 정리
@@ -265,6 +245,9 @@ def main():
     st.set_page_config(page_title="초등 수학 짱", page_icon="💯", layout="wide")
     apply_custom_style()
 
+    # NameError 방지: 변수 초기화를 가장 먼저 수행
+    unit_labels = list(UNITS.values())
+
     if 'step' not in st.session_state: st.session_state.step = 'intro'
     if 'current_unit' not in st.session_state: st.session_state.current_unit = 1
     if 'wrong_notes' not in st.session_state: st.session_state.wrong_notes = []
@@ -279,8 +262,11 @@ def main():
         st.write("---")
         
         # 단원 선택
-        unit_labels = list(UNITS.values())
         cur_label = UNITS[st.session_state.current_unit]
+        # index 에러 방지를 위한 안전장치
+        if cur_label not in unit_labels:
+            cur_label = unit_labels[0]
+            
         sel = st.radio("학습 단원", unit_labels, index=unit_labels.index(cur_label), label_visibility="collapsed")
         
         # 변경 감지
@@ -311,10 +297,8 @@ def main():
     if st.session_state.step == 'intro':
         st.markdown(f"<h1 style='color:#6C5CE7; font-family:Jua;'>오늘의 학습: {unit_name.split('. ')[1]}</h1>", unsafe_allow_html=True)
         
-        # 개념 카드 (st.container + border=True 사용)
-        # CSS가 이 컨테이너를 '카드 디자인'으로 바꿔줍니다.
-        with st.container(border=True):
-            st.markdown(CONCEPTS[st.session_state.current_unit])
+        # HTML 태그 대신 st.info 사용 (CSS로 색상 변경됨) -> LaTeX 완벽 지원
+        st.info(CONCEPTS[st.session_state.current_unit])
         
         st.markdown("<br>", unsafe_allow_html=True)
         
@@ -339,7 +323,7 @@ def main():
         
         prob = st.session_state.current_prob
         
-        # 문제 카드 (컨테이너 사용)
+        # 문제 표시 (컨테이너 사용)
         with st.container(border=True):
             st.markdown(f"<h4 style='color:#888;'>Q{st.session_state.q_idx + 1}.</h4>", unsafe_allow_html=True)
             st.markdown(f"### {prob['q']}")
@@ -364,12 +348,9 @@ def main():
                         st.session_state.score += 1
                     else:
                         st.error("틀렸습니다 😢")
-                        # 오답 하이라이트 (인용구 사용)
-                        st.markdown(f"""
-                        > **정답: {prob['a']}**
-                        >
-                        > 해설: {prob['exp']}
-                        """)
+                        # 오답 해설도 st.info(또는 warning) 사용해서 수식 깨짐 방지
+                        st.warning(f"**정답: {prob['a']}**\n\n해설: {prob['exp']}")
+                        
                         if prob not in st.session_state.wrong_notes:
                             prob['user_wrong'] = ans
                             st.session_state.wrong_notes.append(prob)
@@ -404,11 +385,11 @@ def main():
         
         for i, n in enumerate(st.session_state.wrong_notes):
             with st.expander(f"🔍 {i+1}번 문제 보기"):
-                with st.container(border=True):
-                    st.markdown(f"**문제:** {n['q']}")
-                    st.markdown(f"**내가 쓴 답:** :red[{n.get('user_wrong','?')}]")
-                    st.markdown(f"**정답:** :green[{n['a']}]")
-                    st.markdown(f"> **해설:** {n['exp']}")
+                st.markdown(f"**문제:** {n['q']}")
+                st.markdown(f"**내가 쓴 답:** :red[{n.get('user_wrong','?')}]")
+                st.markdown(f"**정답:** :green[{n['a']}]")
+                # 해설 박스
+                st.info(f"**해설:** {n['exp']}")
         
         if st.button("🔙 돌아가기", use_container_width=True):
             st.session_state.step = 'intro'
