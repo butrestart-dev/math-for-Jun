@@ -1,32 +1,33 @@
 import streamlit as st
 import random
 
-# --- 1. 🎨 디자인 & 폰트 절대 사수 (3중 안전장치) ---
+# --- 1. 🎨 디자인 & 폰트 깨짐 방지 (최종_최종_수정.ver) ---
 def apply_custom_style():
     st.markdown("""
     <style>
-    /* 1. 웹 폰트 로딩 (Jua: 제목용, Noto Sans: 본문용) */
+    /* 1. 웹 폰트 불러오기 시도 (Jua, Noto Sans) */
     @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap');
 
-    /* 2. 폰트 강제 적용 순서 (웹폰트 실패 시 -> 기기 기본 폰트 사용) */
-    html, body, [class*="css"], font, div, p, span, h1, h2, h3, h4, h5, h6 {
-        font-family: 'Jua', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Nanum Gothic', sans-serif !important;
+    /* 2. 폰트 적용 순서 (강력한 안전장치) */
+    /* 웹폰트 -> 애플(아이패드) -> 안드로이드(갤럭시탭) -> 윈도우 -> 기본 고딕 순서로 찾음 */
+    html, body, [class*="css"], font, div, p, span, h1, h2, h3, h4, h5, h6, button, input, label, li {
+        font-family: 'Jua', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Droid Sans', 'Malgun Gothic', 'Dotum', sans-serif !important;
         color: #333333;
     }
 
-    /* 배경: 아주 연한 보라빛 회색 (눈 편안함) */
+    /* 배경색: 눈이 편안한 아주 연한 보라빛 회색 */
     .stApp {
-        background-color: #F3F4F6;
+        background-color: #F8F9FA;
     }
 
-    /* ----------------- 카드 UI (상용 앱 스타일) ----------------- */
+    /* ----------------- 카드 UI (세련된 박스 디자인) ----------------- */
     .main-card {
         background-color: #FFFFFF;
         border-radius: 20px;
         padding: 30px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
-        border: 1px solid #E5E7EB;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+        border: 1px solid #E9ECEF;
     }
 
     /* 제목 스타일 */
@@ -34,56 +35,75 @@ def apply_custom_style():
         font-family: 'Jua', sans-serif !important;
         color: #6C5CE7; /* 예쁜 보라색 */
         font-size: 2.2rem;
-        text-shadow: 2px 2px 0px #E0E0E0;
-        margin-bottom: 10px;
+        font-weight: bold;
+        text-shadow: 2px 2px 0px #F3F0FF;
+        margin-bottom: 15px;
     }
 
-    /* 강조 박스 */
+    /* 강조 박스 (개념 설명 안의 박스) */
     .highlight-box {
-        background-color: #F5F3FF; /* 연한 보라 배경 */
+        background-color: #F3F0FF; /* 연한 보라 배경 */
         border-left: 5px solid #6C5CE7;
-        padding: 15px;
-        border-radius: 8px;
+        padding: 20px;
+        border-radius: 10px;
         margin: 15px 0;
+        line-height: 1.6;
     }
 
     /* 버튼 스타일 (그라데이션 젤리 버튼) */
     .stButton>button {
-        background: linear-gradient(90deg, #6C5CE7, #8076EE);
+        background: linear-gradient(135deg, #6C5CE7, #8076EE);
         color: white !important;
         border: none;
         border-radius: 15px;
-        padding: 12px 0;
+        padding: 15px 0;
         font-size: 1.2rem;
         font-weight: bold;
-        box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+        box-shadow: 0 4px 10px rgba(108, 92, 231, 0.2);
         transition: transform 0.2s;
         width: 100%;
+        margin-top: 10px;
     }
     .stButton>button:hover {
         transform: scale(1.02);
         box-shadow: 0 6px 15px rgba(108, 92, 231, 0.4);
     }
     
-    /* 사이드바 스타일 개선 */
+    /* 사이드바 스타일 */
     [data-testid="stSidebar"] {
         background-color: #FFFFFF;
         border-right: 1px solid #E5E7EB;
     }
+    [data-testid="stSidebar"] h2 {
+        color: #6C5CE7 !important;
+    }
 
-    /* 라디오 버튼 (선택지) 스타일 */
+    /* 라디오 버튼 (선택지) 스타일 - 카드처럼 보이게 */
     .stRadio label {
         background: white;
-        padding: 12px;
-        border-radius: 10px;
-        border: 2px solid #F3F4F6;
-        margin-bottom: 5px;
+        padding: 15px;
+        border-radius: 12px;
+        border: 2px solid #F1F3F5;
+        margin-bottom: 8px;
         transition: 0.3s;
         font-size: 1.05rem !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
     }
     .stRadio label:hover {
         border-color: #6C5CE7;
-        background-color: #F5F3FF;
+        background-color: #F8F7FF;
+        cursor: pointer;
+    }
+    
+    /* 입력창 스타일 */
+    .stTextInput input {
+        padding: 15px;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        border: 2px solid #E9ECEF;
+    }
+    .stTextInput input:focus {
+        border-color: #6C5CE7;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -96,11 +116,11 @@ UNITS = {
     4: "4. 비와 비율"
 }
 
-# HTML을 활용해 예쁘게 꾸민 개념 설명
+# HTML을 활용해 예쁘게 꾸민 개념 설명 (폰트 적용됨)
 CONCEPTS = {
     1: """
     <div class="main-card">
-        <h3 style="color:#6C5CE7;">🍰 분수의 나눗셈, 이렇게 이해해요!</h3>
+        <h3 style="color:#6C5CE7;">🍰 분수의 나눗셈 핵심 정리</h3>
         <p><b>1. (자연수) ÷ (자연수)</b></p>
         <p>"피자 1판을 3명이 똑같이 나누어 먹는 상황을 상상해봐요."<br>
         한 사람이 먹는 양은 3조각 중의 1조각이죠? 그래서 <b>1/3</b>입니다.</p>
@@ -287,10 +307,9 @@ def main():
 
     # ================= 사이드바 (Nav) =================
     with st.sidebar:
-        st.markdown("<h2 style='color:#6C5CE7; font-family:Jua;'>🏫 나의 학습실</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='font-family:Jua; margin-bottom:20px;'>🏫 나의 학습실</h2>", unsafe_allow_html=True)
         
         # 1. 단원 선택
-        st.write("---")
         st.markdown("**📘 단원 선택**")
         unit_labels = list(UNITS.values())
         current_label = UNITS[st.session_state.current_unit]
