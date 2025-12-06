@@ -1,14 +1,14 @@
 import streamlit as st
 import random
 
-# --- 1. 🎨 디자인 & CSS 설정 (수식 깨짐 해결 버전) ---
+# --- 1. 🎨 디자인 & CSS 설정 (수식 깨짐 해결 + 폰트 강제 적용) ---
 def apply_custom_style():
     st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-    /* 기본 폰트 설정 */
-    html, body, [class*="css"], div, p, span, h1, h2, h3 {
+    /* 1. 폰트 강제 적용 (모든 요소) */
+    html, body, [class*="css"], div, p, span, h1, h2, h3, h4, li, button, input {
         font-family: 'Jua', 'Noto Sans KR', 'Malgun Gothic', sans-serif !important;
         color: #333333;
     }
@@ -18,16 +18,19 @@ def apply_custom_style():
         background-color: #F8F9FA;
     }
 
-    /* 1. 메인 카드 디자인 (st.container border=True 스타일 덮어쓰기) */
+    /* 2. 메인 카드 디자인 (st.container의 테두리 스타일을 덮어씀) */
+    /* HTML div 대신 st.container(border=True)를 꾸며서 카드처럼 만듦 */
     [data-testid="stVerticalBlockBorderWrapper"] {
         background-color: white;
         border-radius: 20px;
         padding: 20px;
         border: 2px solid #E9ECEF;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
     }
 
-    /* 2. 하이라이트 박스 디자인 (마크다운 인용구 '>' 스타일 덮어쓰기) */
+    /* 3. 하이라이트 박스 디자인 (마크다운 인용구 '>' 스타일을 덮어씀) */
+    /* HTML div 대신 > (인용구)를 꾸며서 설명 박스처럼 만듦 */
     blockquote {
         background-color: #F3F0FF; /* 연한 보라색 배경 */
         border-left: 6px solid #6C5CE7; /* 진한 보라색 선 */
@@ -35,6 +38,7 @@ def apply_custom_style():
         border-radius: 10px;
         color: #333;
         font-size: 1.05rem;
+        margin: 10px 0;
     }
 
     /* 제목 스타일 */
@@ -42,6 +46,7 @@ def apply_custom_style():
         color: #6C5CE7 !important; /* 보라색 제목 */
         font-size: 1.8rem !important;
         margin-bottom: 20px;
+        font-family: 'Jua', sans-serif !important;
     }
 
     /* 버튼 스타일 */
@@ -84,8 +89,10 @@ def apply_custom_style():
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. 📚 데이터: 마크다운으로 변환된 개념 설명 (수식 작동함) ---
-# 중요: r"""...""" (Raw String)을 써야 백슬래시(\)가 수식으로 인식됩니다.
+# --- 2. 📚 데이터: 마크다운으로 변환된 개념 설명 (수식 작동함!) ---
+# 중요: HTML 태그(<div>)를 모두 제거하고, 순수 마크다운과 수식($$)만 남겼습니다.
+# r""" ... """ (Raw String)을 사용하여 파이썬이 수식 기호를 오해하지 않도록 했습니다.
+
 CONCEPTS = {
     1: r"""
 ### 🍰 분수의 나눗셈 핵심 정리
@@ -304,8 +311,8 @@ def main():
     if st.session_state.step == 'intro':
         st.markdown(f"<h1 style='color:#6C5CE7; font-family:Jua;'>오늘의 학습: {unit_name.split('. ')[1]}</h1>", unsafe_allow_html=True)
         
-        # 개념 카드 (st.container를 사용하여 디자인 적용)
-        # border=True 옵션이 CSS로 디자인된 'Main Card'가 됩니다.
+        # 개념 카드 (st.container + border=True 사용)
+        # CSS가 이 컨테이너를 '카드 디자인'으로 바꿔줍니다.
         with st.container(border=True):
             st.markdown(CONCEPTS[st.session_state.current_unit])
         
@@ -332,7 +339,7 @@ def main():
         
         prob = st.session_state.current_prob
         
-        # 문제 카드
+        # 문제 카드 (컨테이너 사용)
         with st.container(border=True):
             st.markdown(f"<h4 style='color:#888;'>Q{st.session_state.q_idx + 1}.</h4>", unsafe_allow_html=True)
             st.markdown(f"### {prob['q']}")
@@ -357,7 +364,7 @@ def main():
                         st.session_state.score += 1
                     else:
                         st.error("틀렸습니다 😢")
-                        # 오답 하이라이트 박스
+                        # 오답 하이라이트 (인용구 사용)
                         st.markdown(f"""
                         > **정답: {prob['a']}**
                         >
